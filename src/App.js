@@ -1,23 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import GlobalProvider from './stores/GlobalProvider';
-import SearchProvider from './stores/SearchProvider';
-import FormProvider from './stores/FormProvider';
-import Search from './components/Search';
-import Form from './components/Form';
+import React from "react";
+import { BrowserRouter, Switch, Link } from "react-router-dom";
+
+import "./App.css";
+import GlobalProvider from "./stores/GlobalProvider";
+import FormRoot from "./page/Form/Root";
+import HomeRoot from "./page/Home/Root";
 
 function App() {
   return (
     <GlobalProvider>
-      <SearchProvider>
-        <Search />
-      </SearchProvider>
-      <FormProvider>
-        <Form />
-      </FormProvider>
+      <BrowserRouter>
+        <div>
+          <Link to="/">Home</Link>
+          <hr />
+          <Link to="/form">Register</Link>
+          <br />
+          <Link to="/form/counter">Counter</Link>
+          <hr />
+        </div>
+
+        <Switch>
+          <>
+            <FormRoot />
+            <HomeRoot />
+          </>
+        </Switch>
+      </BrowserRouter>
     </GlobalProvider>
   );
 }
 
-export default App;
+export default React.memo(App);

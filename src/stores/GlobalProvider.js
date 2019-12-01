@@ -1,40 +1,51 @@
-import React, { createContext } from 'react';
-import { createStore } from 'redux';
-import { Provider } from 'react-redux';
+import React, { createContext, useEffect } from "react";
+import { createStore } from "redux";
+import { Provider, createDispatchHook, createSelectorHook } from "react-redux";
 
-const CHANGE_COUNTER = 'CHANGE_COUNTER_GLOBAL';
+const CHANGE_COUNTER = "CHANGE_COUNTER_GLOBAL";
 
+export const GlobalContext = createContext();
+export const useDispatchGlobal = createDispatchHook(GlobalContext);
+export const useSelectorGlobal = createSelectorHook(GlobalContext);
+
+export const changeCounterGlobalAction = () => ({
+  type: CHANGE_COUNTER
+});
 
 function initiateStatus() {
-    return {
-        counterGlobal: 0,
-        label: 'Global Provider'
-    }
+  return {
+    counterGlobal: 0
+  };
 }
 
 function handleChangeCounter(states) {
-    return {
-        ...states,
-        counterGlobal: states.counterGlobal +1,
-    }
+  return {
+    ...states,
+    counterGlobal: states.counterGlobal + 1
+  };
 }
 
 function reducer(states = initiateStatus(), actions) {
-    switch(actions.type) {
-        case CHANGE_COUNTER:
-            return handleChangeCounter(states);
+  switch (actions.type) {
+    case CHANGE_COUNTER:
+      return handleChangeCounter(states);
+
     default:
-        return states;
-    }
+      return states;
+  }
 }
 
-export const GlobalContext = createContext();
+export default function({ children }) {
+  const store = createStore(reducer);
 
-export const changeCounterGlobal = () => ({
-    type: CHANGE_COUNTER
-})
+  useEffect(() => {
+    console.log("GlobalContext create");
+    return () => console.log("GlobalContext destroy");
+  }, []);
 
-export default function ({children}) {
-    const store = createStore(reducer);
-    return <Provider context={GlobalContext} store={store}>{children}</Provider>
+  return (
+    <Provider context={GlobalContext} store={store}>
+      {children}
+    </Provider>
+  );
 }

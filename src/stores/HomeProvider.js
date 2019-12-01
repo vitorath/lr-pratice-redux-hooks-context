@@ -3,31 +3,19 @@ import { createStore } from "redux";
 import { Provider, createSelectorHook, createDispatchHook } from "react-redux";
 
 const CHANGE_COUNTER = "CHANGE_COUNTER";
-const CHANGE_CRITERIAS = "CHANGE_CRITERIAS";
 const CLEAR = "CLEAR";
 
-export const FormContext = createContext();
-export const useDispatchForm = createDispatchHook(FormContext);
-export const useSelectorForm = createSelectorHook(FormContext);
+export const HomeContext = createContext();
+export const useDispatchHome = createDispatchHook(HomeContext);
+export const useSelectorHome = createSelectorHook(HomeContext);
 
 export const changeCounterAction = () => ({
   type: CHANGE_COUNTER
 });
 
-export const changeCriteriasAction = (name, value) => ({
-  type: CHANGE_CRITERIAS,
-  name: name,
-  value: value
-});
-
 export const clearAction = () => ({
   type: CLEAR
 });
-
-function onChange(value) {
-  this.value = value;
-  return this;
-}
 
 function onCount() {
   this.value += 1;
@@ -37,9 +25,7 @@ function onCount() {
 function initiateStatus() {
   return {
     form: {
-      counter: { value: 0, onCount: onCount },
-      name: { name: "name", value: "", onChange: onChange },
-      age: { name: "age", value: "", onChange: onChange }
+      counter: { value: 0, onCount: onCount }
     }
   };
 }
@@ -55,17 +41,6 @@ function handleChangeCounter(states) {
   };
 }
 
-function handleChange(states, actions) {
-  const criteria = states.form[actions.name];
-  return {
-    ...states,
-    form: {
-      ...states.form,
-      [actions.name]: criteria.onChange(actions.value)
-    }
-  };
-}
-
 function handleClear() {
   return initiateStatus();
 }
@@ -74,10 +49,8 @@ function reducer(states = initiateStatus(), actions) {
   switch (actions.type) {
     case CHANGE_COUNTER:
       return handleChangeCounter(states);
-    case CHANGE_CRITERIAS:
-      return handleChange(states, actions);
     case CLEAR:
-      return handleClear();
+      return handleClear(states);
     default:
       return states;
   }
@@ -87,12 +60,12 @@ export default function({ children }) {
   const store = createStore(reducer);
 
   useEffect(() => {
-    console.log("FormContext create");
-    return () => console.log("FormContext destroy");
+    console.log("HomeContext create");
+    return () => console.log("HomeContext destroy");
   }, []);
 
   return (
-    <Provider context={FormContext} store={store}>
+    <Provider context={HomeContext} store={store}>
       {children}
     </Provider>
   );
