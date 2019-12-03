@@ -16,6 +16,8 @@ function App() {
           <Link to="/form">Register</Link>
           <br />
           <Link to="/form/counter">Counter</Link>
+          <br />
+          <Link to="/form/counter/local">Counter Local</Link>
           <hr />
         </div>
 

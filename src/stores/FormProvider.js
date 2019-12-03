@@ -1,10 +1,14 @@
 import React, { createContext, useEffect } from "react";
-import { createStore } from "redux";
+import { createStore, applyMiddleware } from "redux";
 import { Provider, createSelectorHook, createDispatchHook } from "react-redux";
+import createSagaMiddleware from 'redux-saga';
+import watchForm from "./FormSaga";
 
-const CHANGE_COUNTER = "CHANGE_COUNTER";
-const CHANGE_CRITERIAS = "CHANGE_CRITERIAS";
-const CLEAR = "CLEAR";
+const CHANGE_COUNTER = "CHANGE_COUNTER_FORM";
+const CHANGE_CRITERIAS = "CHANGE_CRITERIAS_FORM";
+const CLEAR = "CLEAR_FORM";
+const SUCCESS = "SUCCESS_FORM";
+const FAIL = "FAIL_FORM";
 
 export const FormContext = createContext();
 export const useDispatchForm = createDispatchHook(FormContext);
@@ -24,6 +28,14 @@ export const clearAction = () => ({
   type: CLEAR
 });
 
+export const successAction = () => ({
+  type: SUCCESS,
+})
+
+export const failAction = () => ({
+  type: FAIL,
+})
+
 function onChange(value) {
   this.value = value;
   return this;
@@ -36,6 +48,7 @@ function onCount() {
 
 function initiateStatus() {
   return {
+    success: false,
     form: {
       counter: { value: 0, onCount: onCount },
       name: { name: "name", value: "", onChange: onChange },
@@ -66,6 +79,15 @@ function handleChange(states, actions) {
   };
 }
 
+function handlerSuccess(states) {
+  return {...states, success: true}
+}
+
+function handlerFail(states) {
+  console.log(handlerFail)
+  return {...states, success: false}
+}
+
 function handleClear() {
   return initiateStatus();
 }
@@ -78,13 +100,19 @@ function reducer(states = initiateStatus(), actions) {
       return handleChange(states, actions);
     case CLEAR:
       return handleClear();
+    case SUCCESS:
+      return handlerSuccess(states);
+    case FAIL:
+      return handlerFail(states);
     default:
       return states;
   }
 }
 
 export default function({ children }) {
-  const store = createStore(reducer);
+  const sagaMiddleware = createSagaMiddleware();
+  const store = createStore(reducer, applyMiddleware(sagaMiddleware));
+  sagaMiddleware.run(watchForm)
 
   useEffect(() => {
     console.log("FormContext create");

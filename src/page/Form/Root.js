@@ -8,6 +8,8 @@ import FormProvider, {
 import RegisterFormPage from "./Register/RegisterFormPage";
 import CounterFormPage from "./Counter/CounterFormPage";
 import ExactRouter from "../../hoc/ExactRouter";
+import CounterLocalProvider from "../../stores/CounterLocalProvider";
+import CounterLocalFormPage from "./CounterLocal/CounterLocalFormPage";
 
 const Wrapper = () => {
   const dispatch = useDispatchForm();
@@ -23,6 +25,9 @@ const Wrapper = () => {
     <>
       <ExactRouter path="/form" component={<RegisterFormPage />} />
       <Route exact path="/form/counter" component={CounterFormPage} />
+      <CounterLocalProvider>
+        <Route exact path="/form/counter/local" component={CounterLocalFormPage} />
+      </CounterLocalProvider>
     </>
   );
 };
