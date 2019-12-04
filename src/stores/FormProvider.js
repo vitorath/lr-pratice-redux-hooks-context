@@ -1,7 +1,7 @@
 import React, { createContext, useEffect } from "react";
 import { createStore, applyMiddleware } from "redux";
 import { Provider, createSelectorHook, createDispatchHook } from "react-redux";
-import createSagaMiddleware from 'redux-saga';
+import createSagaMiddleware from "redux-saga";
 import watchForm from "./FormSaga";
 
 const CHANGE_COUNTER = "CHANGE_COUNTER_FORM";
@@ -29,12 +29,12 @@ export const clearAction = () => ({
 });
 
 export const successAction = () => ({
-  type: SUCCESS,
-})
+  type: SUCCESS
+});
 
 export const failAction = () => ({
-  type: FAIL,
-})
+  type: FAIL
+});
 
 function onChange(value) {
   this.value = value;
@@ -80,12 +80,12 @@ function handleChange(states, actions) {
 }
 
 function handlerSuccess(states) {
-  return {...states, success: true}
+  return { ...states, success: true };
 }
 
 function handlerFail(states) {
-  console.log(handlerFail)
-  return {...states, success: false}
+  console.log(handlerFail);
+  return { ...states, success: false };
 }
 
 function handleClear() {
@@ -112,7 +112,7 @@ function reducer(states = initiateStatus(), actions) {
 export default function({ children }) {
   const sagaMiddleware = createSagaMiddleware();
   const store = createStore(reducer, applyMiddleware(sagaMiddleware));
-  sagaMiddleware.run(watchForm)
+  sagaMiddleware.run(watchForm);
 
   useEffect(() => {
     console.log("FormContext create");
